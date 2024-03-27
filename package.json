@@ -1,0 +1,19 @@
+{
+  "name": "voice-recorder-summariser",
+  "version": "1.0.0",
+  "description": "Bedrock voice recorder summariser",
+  "author": "Oli Leach AWS",
+  "license": "MIT",
+  "main": "app.js",
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.540.0",
+    "@aws-sdk/client-s3": "^3.537.0",
+    "@aws-sdk/client-transcribe": "^3.535.0",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.9",
+    "express": "^4.16.4",
+    "uuid": "^9.0.1"
+  }
+}
