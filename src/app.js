@@ -31,7 +31,11 @@ app.use(cors());
 
 // this route returns the index HTML page
 app.get('/', function(req,res){
-  res.render('index', {test: ""});
+  res.render('recorder', {test: ""});
+});
+
+app.get('/texter', function(req,res){
+  res.render('recorder', {test: ""});
 });
 
 app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async function (req, res) {
