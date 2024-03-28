@@ -26,7 +26,7 @@ Ping @oliverle on slack to talk about contributing and getting started. You need
 
 Here's the architecture:
 
-![High-Level Architecture](src/assets/img/bedrock-demo.jpg)
+![High-Level Architecture](src/assets/img/bedrock-architecture.jpg)
 
 
 ## How to build the docker image locally or using ECR
