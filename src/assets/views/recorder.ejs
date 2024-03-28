@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head') %>
+<body>
+  <%- include('partials/header') %> <%- include('partials/section') %>
+  <main id="main">
+    <div class="container">
+      <p class="ml-5"></p>
+          <b>Disclaimer:</b> This is a demo app. Do not use this to record customer meetings or conversations you do not have permission to record.
+      </p>
+    </div class="container">
+    <section id="about" class="about section-bg">
+      <div class="container" data-aos="fade-in">
+        <audio id="recorder" muted hidden></audio>
+
+        <div class="row justify-content-md-center">
+          <div class="col col-lg-2">
+            <button class="btn btn-get-started scrollto btn-primary btn-lg" style="width:200px; background-color:#2f4c7e" id="start">Record</button>
+          </div>
+          <div class="col col-lg-2">
+            <button class="btn btn-get-started scrollto btn-primary btn-lg" style="width:200px; background-color:#2f4c7e" id="stop">Stop Recording</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center mt-1">
+            <audio id="player" controls></audio>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center mt-1">
+            <button class="btn btn-primary btn-lg" id="transcribe" style="width:200px; background-color:#2f4c7e" hidden>Transcribe</button>
+          <div>
+            <progress class="mt-2" id="progress-bar" aria-label="Content loading…" hidden></progress>
+          </div> 
+          <div color:black; class="mt-2" id="progress-text" hidden>Please be patient while your recording is being summarised.</div>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div class="form-group pt-5 container">
+          <textarea id="bedrockText" class="form-control" hidden></textarea>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======= Frequently Asked Questions Section ======= -->
+    <section id="faq" class="faq section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-list">
+          <ul>
+            <li data-aos="fade-up" data-aos-duration="500">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1">How does this website work? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-1" class="collapse show" data-bs-parent=".faq-list">
+                <p>
+                  This website only support Google Chrome. It uses the Google Chrome microphone plugin to record a conversation by clicking on the record button. Once you have finished recording a conversation, click on stop recording. When you do this, the Transcribe button appears. When you click the Transcribe button, the recorded conversation is sent to AWS Transcribe and then to AWS Bedrock for summarisation. The response is sent back to the web page and the text is displayed in a text box. Have a go, it's fun!
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="200">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed">How is this app built? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-2" class="collapse" data-bs-parent=".faq-list">
+                <p>
+                  The website is built on Node.js and uses Express as the middleware. The front end web page is built using HTML, CSS and Javascript. The web page is a template from Bootstrap. Most of the code has been sourced from the internet but then formatted appropriately. For example, the AWS Bedrock Node.js code for AWS Bedrock was taken from these code examples.<a target="_blank" href="https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_bedrock_code_examples.html">https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_bedrock_code_examples.html.</a>
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="300">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-3" class="collapsed">Can I use this to record any conversation? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-3" class="collapse" data-bs-parent=".faq-list">
+                <p>
+                  No. This is a demo app only used for learning purposes. It cannot be used to record conversations without permissions. As the website developer, I take no responsbility for anyone using this web app to record any conversation. It may work or it may not. It's purely built to demo the power of AWS Bedrock.
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="400">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-4" class="collapsed">Why was this web app built? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-4" class="collapse" data-bs-parent=".faq-list">
+                <p>
+                  I did this for 2 main reasons. One, so that I could learn AWS Bedrock. Two, so I can build on this to learn more about our AI and GenAI tooling on AWS. Having hands on experience for me is a great way to learn AWS Services and SDKs.
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="500">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-5" class="collapsed">Can I contribute to this code? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-5" class="collapse" data-bs-parent=".faq-list">
+                <div class="typewriter">
+                  <p>
+                    For sure - reach out to @oliverle for more information and access to the git repo running on Gitlab.
+                  </p>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+      </div>
+    </section><!-- End Frequently Asked Questions Section -->
+
+  </main><!-- End #main -->
+
+  <%- include('partials/footer') %>
+
+  <style>
+    .typewriter h1 {
+      overflow: hidden; /* Ensures the content is not revealed until the animation */
+      border-right: .15em solid orange; /* The typwriter cursor */
+      white-space: nowrap; /* Keeps the content on a single line */
+      margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+      letter-spacing: .15em; /* Adjust as needed */
+      animation: 
+        typing 3.5s steps(40, end),
+        blink-caret .75s step-end infinite;
+    }
+
+    /* The typing effect */
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    /* The typewriter cursor effect */
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: orange; }
+    }
+  </style>
+
+</body>
+
+</html>
