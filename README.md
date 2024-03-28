@@ -67,7 +67,7 @@ aws cloudformation create-stack \
 
 ## Project config
 
-You can configure the variables in ```src/libs/variables.js``` and changed your region. Not, today, Amazon Bedrock only runs in certain regions, so I use us-east-1. You will need to create an S3 bucket and add this bucket name to the ```src/libs/variables.js``` file.
+You can configure the variables in ```src/libs/variables.js``` and changed your region. Note, today, Amazon Bedrock only runs in certain regions, so I use us-east-1. You will need to create an S3 bucket and add this bucket name to the ```src/libs/variables.js``` file.
 
 
 ## Authors
