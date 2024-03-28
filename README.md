@@ -15,12 +15,13 @@ Ping @oliverle on slack to talk about contributing and getting started. You need
 
 ### AWS Services Used
 
-  - Amazon Transcribe
-  - Amazon ECS on Fargate
   - Amazon Bedrock
-  - Amazon S3
   - Amazon CloudWatch
+  - Amazon ECS on Fargate
   - Amazon Elastic Container Registry
+  - Amazon Elastic Load Balancing
+  - Amazon S3
+  - Amazon Transcribe
 
 
 Here's the architecture:
