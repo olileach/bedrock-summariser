@@ -52,17 +52,16 @@ app.post('/api/question', async function (req, res) {
 
   var modelId = req.headers['x-model-name'];
   var questionInput = (req.body.toString());
-  console.log("Using th4e following modelId: " + modelId);
+  console.log("Using the following modelId: " + modelId);
   console.log("Got the following question: " +questionInput);
   
   if (!questionInput){
     res.send("I didn't get any text to summarise. Did you enter anything? Perhaps, try that again.");
   }
-  else{
-    const bedrockSummary = await bedrockUtils.invokeModel(questionInput, modelId);
-    console.log("Value returned by Bedrock: " + bedrockSummary)
-  } 
-  
+
+  const bedrockSummary = await bedrockUtils.invokeModel(questionInput, modelId);
+  console.log("Value returned by Bedrock: " + bedrockSummary)
+
   if (bedrockSummary.stack) {
     res.send("We've hit this error message - try another model, e.g. anthropic.claude-v2 \n\n" 
     + bedrockSummary.message )
@@ -83,7 +82,7 @@ app.post('/api/models', async function(req,res){
 
 app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async function (req, res) {
 
-  console.log(req.headers['x-model-name']);
+  console.log("Using the following modelId: " + req.headers['x-model-name']);
 
   try {
     const s3response = await s3Utils.s3upload(req.body);
