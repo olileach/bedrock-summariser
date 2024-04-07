@@ -29,6 +29,20 @@ Here's the architecture:
 ![High-Level Architecture](src/assets/img/bedrock-architecture.jpg)
 
 
+## Run the node app locally
+
+1 - Run node src/app.js to launch the app locally. Ensure you have valid AWS credentials.
+
+```
+node src/app.js
+```
+
+install all the require packages before running the app for the first time.
+
+```
+node install
+```
+
 ## How to build the docker image locally or using ECR
 
 1 - To build a docker image locally, make sure you have NPM installed and have cloned the git repo.

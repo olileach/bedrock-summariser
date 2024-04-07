@@ -22,59 +22,90 @@
 
 const { StartTranscriptionJobCommand,
         TranscribeClient,
-        GetTranscriptionJobCommand } = require('@aws-sdk/client-transcribe');
+        GetTranscriptionJobCommand,
+        DeleteTranscriptionJobCommand } = require('@aws-sdk/client-transcribe');
 const uuid = require('uuid');
 const variables = require("./variables.js");
 
-// TranscriptionJobStatus:
-//   readonly COMPLETED: "COMPLETED"
-//   readonly FAILED: "FAILED";
-//   readonly IN_PROGRESS: "IN_PROGRESS";
-//   readonly QUEUED: "QUEUED";
-//
+if (variables.environment == "dev"){
+  var creds =  {
+    accessKeyId: variables.accessKey,
+    secretAccessKey: variables.secretAccessKey,
+  }
+}
+// Sleeep function for retry purposes
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+// Transcribe client
+async function transcribeClient (){
+  var client = new TranscribeClient({ 
+    region: variables.region,
+    credentials: creds
+  });
+  return client
+}
+
+// Delete a transcribe job
+async function deleteJob(payload){
+
+  this.jobName = payload['jobName'];
+  this.client = await transcribeClient();
+
+  const params = {
+    TranscriptionJobName: this.jobName, // Required. For example, 'transciption_demo'
+  };
+
+  try {
+    const data = await this.client.send(
+      new DeleteTranscriptionJobCommand(params)
+    );
+    console.log("Success - deleted job " + this.jobName);
+    return data; // For unit tests.
+  } catch (err) {
+    console.log("Error", err);
+  }
+}
+
+// Transcribe a job and wait for the results
 async function transcribeJob(payload){
 
   const keyUuid = uuid.v4()
-  var region = "eu-west-2";
   var transcriptionJob = "job-"+ keyUuid
   var s3key = payload['s3key'];
   var s3endpoint = payload['s3endpoint'];
-  var s3ObjectUrl = "https://" + s3endpoint + "/" + s3key
-  var jobStatusResult
+  var s3ObjectUrl = "https://" + s3endpoint + "/" + s3key;
+  this.client = await transcribeClient();
 
   console.log("payload from transcribe")
 
   if (variables.environment == "dev"){
     var creds =  {
-      accessKeyId: variables.accessKey,
-      secretAccessKey: variables.secretAccessKey,
+    accessKeyId: variables.accessKey,
+    secretAccessKey: variables.secretAccessKey,
     }
   }
-
-  const transcribeClient = new TranscribeClient({ 
-    region: region,
-    credentials: creds
-  });
 
   const params = {
     TranscriptionJobName: transcriptionJob,
     LanguageCode: "en-GB",
     MediaFormat: "ogg",
     Media: {
-      MediaFileUri: s3ObjectUrl,
+    MediaFileUri: s3ObjectUrl,
     },
   };
 
   const transcribeJob = async () => {
+
+    this.responseObj = {};
+
     try {
-      const data = await transcribeClient.send(
-        new StartTranscriptionJobCommand(params)
-      );
+      const data = await this.client.send(
+      new StartTranscriptionJobCommand(params)
+    );
       console.log("Success - transcription job started. Getting results.");
       return data.TranscriptionJob.TranscriptionJobStatus;
     } 
@@ -82,53 +113,55 @@ async function transcribeJob(payload){
       console.log("Error getting transcribe job results", err);
     }
   };
-  
+
   const transcribeJobResultChecker = async () => {
 
     try{
 
-      const jobData = await transcribeClient.send(new GetTranscriptionJobCommand(params));
+      const jobData = await this.client.send(new GetTranscriptionJobCommand(params));
       const jobStatus = jobData.TranscriptionJob.TranscriptionJobStatus;
 
-      if (jobStatus === "COMPLETED") {
-        console.log("Job is " + jobStatus + ". Getting transcribe URL.");
-        console.log("Transcribe URL:", jobData.TranscriptionJob.Transcript.TranscriptFileUri);
+    if (jobStatus === "COMPLETED") {
+      console.log("Job is " + jobStatus + ". Getting transcribe URL.");
+      console.log("Transcribe URL:", jobData.TranscriptionJob.Transcript.TranscriptFileUri);
 
-        await fetch(jobData.TranscriptionJob.Transcript.TranscriptFileUri)
-          .then(async (response) => response.text())
-          .then(async (body) => {
-              console.log(body)
-              response = JSON.parse(body);
-              response.results.transcripts.forEach(async element => {
-                console.log('Returning Transcribe job results ')
-                jobStatusResult = element.transcript;
-            })
-        });
-      }
+      await fetch(jobData.TranscriptionJob.Transcript.TranscriptFileUri)
+        .then(async (response) => response.text())
+        .then(async (body) => {
+          console.log(body)
+          response = JSON.parse(body);
+          this.responseObj = {
+            "jobTextResult":response.results.transcripts[0].transcript, 
+            "jobName":transcriptionJob
+          };
+        }
+      );
+    }
 
-      else if (jobStatus === "FAILED") {
-        console.log("Failed:", data.TranscriptionJob.FailureReason);
-        jobStatusResult = jobStatus;
-      }
+    else if (jobStatus === "FAILED") {
+      console.log("Failed:", data.TranscriptionJob.FailureReason);
+      jobStatusResult = jobStatus;
+    }
 
-      else {
-        console.log("Job is " + jobStatus + ". Rechecking job status.");
-        await sleep(2000);
-        await transcribeJobResultChecker();
-      }
-    } 
-    catch (err) {
+    else {
+      console.log("Job is " + jobStatus + ". Rechecking job status.");
+      await sleep(2000);
+      await transcribeJobResultChecker();
+    }
+  } 
+  catch (err) {
       console.log("Error", err);
       jobStatusResult = err;
-    }
-    return jobStatusResult;
+  }
+  return this.responseObj;
   }
 
   const jobResults = await transcribeJob();
   console.log("transcribeJob " + jobResults);
   const jobResultsChecker = await transcribeJobResultChecker();
-  console.log("jobResultsChecker " + jobResultsChecker)
+  console.log("jobResultsChecker " + JSON.stringify(jobResultsChecker))
   return jobResultsChecker;
 
 }
-module.exports = { transcribeJob };
+
+module.exports = { transcribeJob, deleteJob };

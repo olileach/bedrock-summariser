@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('partials/head') %>
+
+<body>
+
+  <%- include('partials/header') %>
+  <%- include('partials/questions') %>
+
+  <main id="main">
+
+    <section id="texter" class="texter section-bg">
+      <p class="text-center " id="model-used">You are currently using the <b class="text-info ">anthropic.claude-v2 </b>model</p>
+      <div class="row justify-content-md-center"></div>
+      <form id="model-form" class="row justify-content-md-center">
+        <div class="col-auto">
+          <input class="form-control" id="questionInput" style="width:600px;" placeholder="Ask Bedrock anything...">
+        </div>
+        <div class="col-auto">
+          <button id="questionButton" style="width:150px" type="button" class="btn btn-primary mb-3 getstarted">Submit</button>
+        </div>
+      </form>
+      <div class="row">
+        <div class="col text-center">
+          <progress class="mt-2" id="progress-bar" aria-label="Content loading…" hidden></progress>
+        </div> 
+        <div color:black; class="text-center mt-2" id="progress-text" hidden>
+          Please be patient while your question is being answered.
+        </div>
+      </div>
+      <div class="row">
+        <div class="container-fluid">
+          <div class="form-group pt-5 container">
+            <textarea id="questionResults" class="form-control" hidden></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <%- include('partials/faq') %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+  
+  <script src="../assets/js/question.js"></script>

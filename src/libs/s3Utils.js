@@ -20,10 +20,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, 
+        PutObjectCommand,
+        DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const res = require("express/lib/response");
 const uuid = require('uuid');
 const variables = require("./variables.js");
+
+async function s3client(){
+
+  var region = variables.region;
+  var creds = variables.creds;
+  const s3Client = new S3Client({
+    region: region,
+    credentials: creds
+  });
+  return s3Client
+}
+
+async function s3deleteObject(payload){
+
+  const client = await s3client()
+
+  var s3bucket = payload['s3bucket'];
+  var s3key = payload['s3key'];
+
+  console.log("Deleting S3 object - " + s3key + " in bucket " + s3bucket)
+
+  const command = new DeleteObjectCommand({
+    Bucket: s3bucket,
+    Key: s3key,
+  });
+
+  try {
+    const response = await client.send(command);
+    console.log("Success - deleted S3 object " + JSON.stringify(response));
+  } catch (err) {
+    console.error(err);
+  };
+};
 
 async function s3upload(blob){
 
@@ -32,7 +67,7 @@ async function s3upload(blob){
   var bucketName = "account-bucket-" + region;
   var endpoint = bucketName + ".s3." + region + ".amazonaws.com";
   var key = "blob/" + keyUuid + ".ogg";
-  var tag = ("blob=%s",keyUuid);
+  var tag = ("blob=%s", keyUuid);
 
   if (variables.environment == "dev"){
     var creds =  {
@@ -41,10 +76,7 @@ async function s3upload(blob){
     }
   }
 
-  const s3Client = new S3Client({
-    region: region,
-    credentials: creds
-  });
+  const client = await s3client()
 
   const input = {
     "Body": blob,
@@ -58,7 +90,7 @@ async function s3upload(blob){
 
   const command = new PutObjectCommand(input);
   try{
-    const response = await s3Client.send(command);
+    const response = await client.send(command);
     var resonseObj = {
       "response":response, 
       "s3key":key, 
@@ -73,4 +105,4 @@ async function s3upload(blob){
   }
 }
 
-module.exports = { s3upload };
+module.exports = { s3upload , s3deleteObject};

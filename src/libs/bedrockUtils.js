@@ -21,28 +21,64 @@
 // SOFTWARE.
 
 const variables = require("./variables.js");
+const { BedrockRuntimeClient,
+        InvokeModelCommand} = require("@aws-sdk/client-bedrock-runtime");
+const { BedrockClient,
+        ListFoundationModelsCommand,} = require("@aws-sdk/client-bedrock");
 
-const { BedrockRuntimeClient, InvokeModelCommand } = require("@aws-sdk/client-bedrock-runtime");
-
-const invokeModel = async (text_input, modelId = "anthropic.claude-v2") => {
-
-  if (variables.environment == "dev"){
-    var creds =  {
-      accessKeyId: variables.accessKey,
-      secretAccessKey: variables.secretAccessKey,
-    }
+if (variables.environment == "dev"){
+  var creds =  {
+    accessKeyId: variables.accessKey,
+    secretAccessKey: variables.secretAccessKey,
   }
-  
-  // Create a new Bedrock Runtime client instance.
-  const client = new BedrockRuntimeClient({ 
+}
+
+// Create a new Bedrock Runtime client instance.
+async function bedrockClient (){
+  var client = new BedrockRuntimeClient({ 
     region: variables.bedrockRegion,
     credentials: creds
   });
+  return client
+}
 
+const invokeModel = async (text_input, modelId = "anthropic.claude-3-sonnet-20240229-v1:0:200k") => {
+
+  console.log(modelId)
+  var client = await bedrockClient();
+  // var payload;
+
+  // if (modelId.includes("amazon.")){
+  //   console.log("Using Amazon mode inputs for " + modelId);
+  //   payload = {
+  //     modelId: modelId,
+  //     contentType: "application/json",
+  //     accept: "application/json",
+  //     body: JSON.stringify({
+  //       inputText: text_input,
+  //     }),
+  //   };
+
+  // }
+
+  // if (modelId.includes("anthropic.")){
+  //   console.log("Using Amazon mode inputs for " + modelId);
+  //   payload = {
+  //     anthropic_version: "bedrock-2023-05-31",
+  //     max_tokens: 4096,
+  //     messages: [
+  //       {
+  //         role: "user",
+  //         content: [{ type: "text", text: text_input }],
+  //       },
+  //     ],
+  //   };
+  // }
+ 
   // Prepare the payload for the Messages API request.
   const payload = {
     anthropic_version: "bedrock-2023-05-31",
-    max_tokens: 1000,
+    max_tokens: 4096,
     messages: [
       {
         role: "user",
@@ -57,14 +93,82 @@ const invokeModel = async (text_input, modelId = "anthropic.claude-v2") => {
     body: JSON.stringify(payload),
     modelId,
   });
-  const apiResponse = await client.send(command);
-  // console.log(apiResponse);
 
-  const decodedResponseBody = new TextDecoder().decode(apiResponse.body);
-  /** @type {MessagesResponseBody} */
-  const responseBody = JSON.parse(decodedResponseBody);
-  console.log(responseBody.content[0].text);
-  return responseBody.content[0].text;
+  //const command = new InvokeModelCommand(payload);
+  
+  try{
+
+    const apiResponse = await client.send(command);
+    const decodedResponseBody = new TextDecoder().decode(apiResponse.body);
+    /** @type {MessagesResponseBody} */
+    const responseBody = JSON.parse(decodedResponseBody);
+    console.log(responseBody.content[0].text);
+    return responseBody.content[0].text;
+  }
+  catch(err){
+
+    console.log(err)
+    return err
+  }
 }
 
-module.exports = { invokeModel };
+async function listModels() {
+
+  const client = new BedrockClient({
+    region: variables.bedrockRegion,
+  });
+  
+  const input = {
+    // byProvider: "Anthropic",
+    // byProvider: 'STRING_VALUE',
+    // byCustomizationType: 'FINE_TUNING' || 'CONTINUED_PRE_TRAINING',
+    byOutputModality: 'TEXT',
+    byInferenceType: 'ON_DEMAND', // || 'PROVISIONED',
+  };
+
+  const command = new ListFoundationModelsCommand(input);
+
+  const response = await client.send(command);
+
+  var models = [];
+  var providers = [];
+  
+  for (i in response['modelSummaries']){
+    console.log((response['modelSummaries']))
+
+    for (x in response['modelSummaries'][i]['inputModalities']){
+      var model = response['modelSummaries'][i]['modelId'];
+      var provider = response['modelSummaries'][i]['providerName']
+      if (!providers.includes(provider)){
+        providers.push(provider)
+      }
+      if (!models.includes(model)){
+        models.push(model)
+      }
+    }
+  }
+  console.log("List of available providers " + providers);
+  console.log("List of available models " + models);
+  return(models);
+};
+
+
+async function anthropic_payload(text_input){
+  console.log(text_input)
+  var payload = {
+    anthropic_version: "bedrock-2023-05-31",
+    max_tokens: 2000,
+    messages: [
+      {
+        "role": "user",
+        "content": [{ type: "text", text: text_input}],
+      },
+    ],
+  };
+  console.log(payload)
+  return payload;
+}  
+
+
+
+module.exports = { invokeModel, listModels };

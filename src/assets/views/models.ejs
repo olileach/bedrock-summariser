@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('partials/head') %> <style data-aos-once="true"></style> 
+
+<body>
+
+  <%- include('partials/header') %>
+  <%- include('partials/modelconfig') %>
+
+  <main id="main">
+    <section id="texter" class="texter section-bg">
+    <p class="text-center " id="model-used">You are currently using the <b class="text-info ">anthropic.claude-v2 </b>model</p>
+    <form id="model-form" class="row justify-content-md-center">
+      <div class="col-auto">
+        <input class="form-control" autocomplete="off" list="datalistOptions" id="modelDataList" style="width:600px;" placeholder="Type to search models...">
+        <datalist id="datalistOptions">
+        </datalist>
+      </div>
+      <div class="col-auto">
+        <button id="model-update" type="button" style="width:150px" class="btn btn-primary mb-3 getstarted">Change model</button>
+      </div>
+    </form>
+    </section>
+
+<!-- ======= Portfolio Section ======= -->
+<section id="portfolio" class="portfolio">
+  <div class="container" data-aos="fade-up">
+
+    <div class="section-title">
+      <h2>Bedrock models</h2>
+      <p>Amazon Bedrock is a fully managed service that offers a choice of high-performing foundation models (FMs) from leading AI companies like AI21 Labs, Anthropic, Cohere, Meta, Mistral AI, Stability AI, and Amazon via a single API, along with a broad set of capabilities you need to build generative AI applications with security, privacy, and responsible AI.</p>
+    </div>
+
+    <ul id="portfolio-flters" class="d-flex justify-content-center" data-aos="fade-up" data-aos-delay="100">
+      <li data-filter="*" class="filter-active">All</li>
+      <li data-filter=".filter-bedrock">Amazon</li>
+      <li data-filter=".filter-ai21">AI21 Labs</li>
+      <li data-filter=".filter-anthropic">Anthropic</li> 
+      <li data-filter=".filter-cohere">Cohere</li>
+      <li data-filter=".filter-meta">Meta</li>
+      <li data-filter=".filter-mistral">Mistral AI</li>
+    </ul>
+
+    <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="200">
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-bedrock">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-1.jpg" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>Bedrock</h4>
+          <a href="assets/img/portfolio/portfolio-1.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Bedrock"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://aws.amazon.com/bedrock" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-anthropic">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-2.jpg" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>Anthropic</h4>
+          <a href="assets/img/portfolio/anthropic-details-1.png" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Anthropic"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://www.anthropic.com" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-anthropic">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-3.jpg" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>Anthropic</h4>
+          <a href="assets/img/portfolio/anthropic-details-1.png" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Anthropic"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://www.anthropic.com" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-anthropic">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-4.gif" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>Anthropic</h4>
+          <a href="assets/img/portfolio/anthropic-details-1.png" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Anthropic"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://www.anthropic.com/claude" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-meta">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-5.jpg" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>Meta</h4>
+          <a href="assets/img/portfolio/portfolio-details-1.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Meta"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://ai.meta.com/" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-mistral">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-6.jpg" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>Mistral</h4>
+          <a href="assets/img/portfolio/portfolio-details-1.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Mistral"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://mistral.ai/" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-meta">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-7.jpg" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>Meta</h4>
+          <a href="assets/img/portfolio/portfolio-details-1.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Meta"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://ai.meta.com/" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-ai21">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-8.jpg" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>ai21</h4>
+          <a href="assets/img/portfolio/ai21-details.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="ai21"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://www.ai21.com/studio/foundation-models" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-ai21">
+        <div class="portfolio-img"><img src="assets/img/portfolio/portfolio-9.jpg" class="img-fluid" alt=""></div>
+        <div class="portfolio-info">
+          <h4>ai21</h4>
+          <a href="assets/img/portfolio/ai21-details.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="ai21"><i class="bx bx-plus"></i></a>
+          <a target="_blank" href="https://www.ai21.com/studio/foundation-models" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section><!-- End Portfolio Section -->
+
+</main>
+
+<%- include('partials/footer') %>
+
+<script src="../assets/js/models.js"></script>

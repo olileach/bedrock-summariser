@@ -22,7 +22,7 @@ class VoiceRecorder {
 		this.startRef = document.querySelector("#start")
 		this.stopRef = document.querySelector("#stop")
 		this.transcribeRef = document.querySelector("#transcribe")
-		this.bedrockTextRef = document.querySelector("#bedrockText")
+		this.recorderResultsRef = document.querySelector("#recorderResults")
 		
 		this.startRef.onclick = this.startRecording.bind(this)
 		this.stopRef.onclick = this.stopRecording.bind(this)
@@ -42,7 +42,6 @@ class VoiceRecorder {
 		};
 		this.recorderRef.srcObject = this.stream
 		this.mediaRecorder = new MediaRecorder(this.stream)
-		console.log(this.mediaRecorder)
 		this.mediaRecorder.ondataavailable = this.onMediaRecorderDataAvailable.bind(this)
 		this.mediaRecorder.onstop = this.onMediaRecorderStop.bind(this)
 		this.recorderRef.play()
@@ -74,8 +73,8 @@ class VoiceRecorder {
 	startRecording() {
 		if (this.isRecording) return
 		if (window.voiceRecorder.transcribing) return;
-		var bedrockText = document.getElementById("bedrockText");
-		bedrockText.setAttribute("hidden", true);
+		var recorderResults = document.getElementById("recorderResults");
+		recorderResults.setAttribute("hidden", true);
 		this.isRecording = true
 		this.startRef.innerHTML = 'Recording...'
 		this.playerRef.src = ''
@@ -102,24 +101,32 @@ class VoiceRecorder {
 		this.transcribeRef.innerHTML = 'Transcribing....';
 		document.getElementById("progress-bar").removeAttribute("hidden")
 		document.getElementById("progress-text").removeAttribute("hidden")
+
+
+		var payload = new FormData();
+		payload.append('mediaStream', this.completeStream);
+		payload.append('modelUsed', setModelName());
+
 		const headers = {
-			'Content-Type': 'multipart/form-data'
-		  }
-		axios.post('/api/transcribe', this.completeStream, {
+            'Content-Type': 'multipart/form-data',
+			'X-Model-Name': localStorage.getItem("modelUsed")
+		}
+
+		console.log(payload)
+		axios.post('/api/transcribe', payload , {
 			headers:headers,
 			}).then(function (response) {
-				var bedrockText = document.getElementById("bedrockText");
-				console.log(response.data);
+				var recorderResults = document.getElementById("recorderResults");
 				var str = response.data;
 				const lines = (String(str).match(/\n/g) || '').length + 3
 				var transcribe = document.getElementById("transcribe");
 				transcribe.innerHTML = 'Transcribe';
-				bedrockText.removeAttribute("hidden");
-				bedrockText.setAttribute("rows", lines) // for firefox
-				bedrockText.rows = lines; // for chrome 
+				recorderResults.removeAttribute("hidden");
+				recorderResults.setAttribute("rows", lines) // for firefox
+				recorderResults.rows = lines; // for chrome 
 				document.getElementById("progress-bar").setAttribute("hidden", true)
-				document.getElementById("progress-text").setAttribute("hidden", true) // write code to deal with all progress-bar
-				bedrockText.textContent = response.data;
+				document.getElementById("progress-text").setAttribute("hidden", true)
+				recorderResults.textContent = response.data;
 				window.voiceRecorder.transcribing = false;
 				
 			})
@@ -131,3 +138,18 @@ class VoiceRecorder {
 }
 
 window.voiceRecorder = new VoiceRecorder()
+
+window.addEventListener("load", function() {
+    setModelName();
+});
+
+function setModelName () {
+
+	var modelName = localStorage.getItem("modelUsed")
+	if (!modelName){
+		modelName="anthropic.claude-v2"}
+	var select = document.getElementById("model-used");
+	select.textContent = "You are currently using the "+modelName+" model";
+	return(modelName);
+
+};

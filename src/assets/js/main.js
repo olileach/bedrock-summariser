@@ -13,11 +13,14 @@
    * Easy selector helper function
    */
   const select = (el, all = false) => {
+    if (!el){return}
     el = el.trim()
     if (all) {
       return [...document.querySelectorAll(el)]
     } else {
-      return document.querySelector(el)
+      if (el){
+        return document.querySelector(el)
+      }
     }
   }
 
@@ -128,7 +131,7 @@
   }, true)
 
   /**
-   * Scrool with ofset on links with a class name .scrollto
+   * Scroll with ofset on links with a class name .scrollto
    */
   on('click', '.scrollto', function(e) {
     if (select(this.hash)) {

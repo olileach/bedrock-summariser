@@ -5,7 +5,12 @@
   "author": "Oli Leach AWS",
   "license": "MIT",
   "main": "app.js",
+  "scripts": {
+    "start": "node ../src/app.js",
+    "watch": "nodemon"
+  },
   "dependencies": {
+    "@aws-sdk/client-bedrock": "^3.540.0",
     "@aws-sdk/client-bedrock-runtime": "^3.540.0",
     "@aws-sdk/client-s3": "^3.537.0",
     "@aws-sdk/client-transcribe": "^3.535.0",
@@ -14,6 +19,8 @@
     "cors": "^2.8.5",
     "ejs": "^3.1.9",
     "express": "^4.16.4",
+    "express-formidable": "^1.2.0",
+    "node-html-parser": "^6.1.13",
     "uuid": "^9.0.1"
   }
 }
