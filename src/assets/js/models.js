@@ -3,23 +3,28 @@ var bedrockRunning = false;
 const modelInput = document.getElementById("modelDataList");
 const modelButton = document.getElementById("model-update")
 
+// Input field keypress enter event
 modelInput.addEventListener("keypress", function(event) {
 	if (event.key === "Enter") {
-	  event.preventDefault();
+	  event.preventDefault(); // stops page from refreshing on click / button press
 	  console.log("Setting model id to " + modelInput.value);
 	  setModelName();
 	}
   });
 
+// Button click event
 modelButton.addEventListener("click", function(event){
-	event.preventDefault();
+	event.preventDefault(); // stops page from refreshing on click / button press
+	console.log("Setting model id to " + modelInput.value);
 	setModelName()
 });
 
+// Setting headers for POST request below
 const headers = {
 	'Content-Type': 'application/json'
   }
 
+// This loads the input box with Bedrock Foudnational models to choose from.
 window.onload = async (event) => {
 	axios.post('/api/models', {
 		headers:headers,
@@ -38,9 +43,11 @@ window.onload = async (event) => {
 		}		
 	});
 	
-	localStorage.setItem("models",modelArray);
+	// Potenital to use localStorage in case of performance on loading datalist field in models input. 
+	//localStorage.setItem("models",modelArray);  
 }
 
+// Function to set model name. This could be tidied up a bit.
 function setModelName () {
 
 	var modelName = document.getElementById("modelDataList").value;
@@ -58,4 +65,5 @@ function setModelName () {
 	localStorage.setItem("modelUsed", modelName);
 };
 
+// Update model list on page load.
 window.addEventListener("load", setModelName())

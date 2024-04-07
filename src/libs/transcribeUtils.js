@@ -33,12 +33,11 @@ if (variables.environment == "dev"){
     secretAccessKey: variables.secretAccessKey,
   }
 }
-// Sleeep function for retry purposes
 
+// Sleeep function for retry purposes
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
 
 // Transcribe client
 async function transcribeClient (){

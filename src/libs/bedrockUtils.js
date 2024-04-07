@@ -43,10 +43,11 @@ async function bedrockClient (){
 }
 
 // Function to invoke a Bedrock Model.
-const invokeModel = async (text_input, modelId = "anthropic.claude-3-sonnet-20240229-v1:0:200k") => {
+const invokeModel = async (text_input, modelId = "anthropic.claude-2") => {
 
   console.log(modelId)
   var client = await bedrockClient();
+
   // var payload;
 
   // if (modelId.includes("amazon.")){
@@ -137,40 +138,18 @@ async function listModels() {
   
   for (i in response['modelSummaries']){
     console.log((response['modelSummaries']))
-
-    for (x in response['modelSummaries'][i]['inputModalities']){
-      var model = response['modelSummaries'][i]['modelId'];
-      var provider = response['modelSummaries'][i]['providerName']
-      if (!providers.includes(provider)){
-        providers.push(provider)
-      }
-      if (!models.includes(model)){
-        models.push(model)
-      }
+    var model = response['modelSummaries'][i]['modelId'];
+    var provider = response['modelSummaries'][i]['providerName']
+    if (!providers.includes(provider)){
+      providers.push(provider)
+    }
+    if (!models.includes(model)){
+      models.push(model)
     }
   }
   console.log("List of available providers " + providers);
   console.log("List of available models " + models);
   return(models);
 };
-
-
-async function anthropic_payload(text_input){
-  console.log(text_input)
-  var payload = {
-    anthropic_version: "bedrock-2023-05-31",
-    max_tokens: 2000,
-    messages: [
-      {
-        "role": "user",
-        "content": [{ type: "text", text: text_input}],
-      },
-    ],
-  };
-  console.log(payload)
-  return payload;
-}  
-
-
 
 module.exports = { invokeModel, listModels };

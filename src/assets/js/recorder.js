@@ -1,3 +1,4 @@
+// Code copied from internet and updated. Very neat piece of javascript code.
 class VoiceRecorder {
 	transcribing = false;
 	
@@ -7,8 +8,6 @@ class VoiceRecorder {
 		} else {
 			console.log("getUserMedia is not supported on your browser!")
 		}
-
-		console.log(navigator.mediaDevices.enumerateDevices());
 
 		this.mediaRecorder
 		this.stream
@@ -28,7 +27,6 @@ class VoiceRecorder {
 		this.stopRef.onclick = this.stopRecording.bind(this)
 		this.transcribeRef.onclick = this.transcribe.bind(this)
 
-	
 		this.constraints = {
 			audio: true,
 			video: false
@@ -102,7 +100,6 @@ class VoiceRecorder {
 		document.getElementById("progress-bar").removeAttribute("hidden")
 		document.getElementById("progress-text").removeAttribute("hidden")
 
-
 		var payload = new FormData();
 		payload.append('mediaStream', this.completeStream);
 		payload.append('modelUsed', setModelName());
@@ -112,7 +109,7 @@ class VoiceRecorder {
 			'X-Model-Name': localStorage.getItem("modelUsed")
 		}
 
-		console.log(payload)
+		console.log("Sending payload to Trasncribe" + payload)
 		axios.post('/api/transcribe', payload , {
 			headers:headers,
 			}).then(function (response) {
@@ -139,6 +136,7 @@ class VoiceRecorder {
 
 window.voiceRecorder = new VoiceRecorder()
 
+// sets model to use. This piece of code should go to a main javascript page.
 window.addEventListener("load", function() {
     setModelName();
 });
