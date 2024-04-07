@@ -1,11 +1,11 @@
 # Bedrock Summariser
 
-This is a simple web app build on Node.js that allows you to summarise a conversation using your web browser microphone using AWS Bedrock. 
+This is a simple web app build on Node.js that allows you to summarise a conversation using your web browser microphone using AWS Bedrock, ask a question directly to Bedrock, and try out different Bedrock Foudnational Models. 
 
 
 ## Description
 
-This app best runs in Chrome. It's a client server app using Node.js Express as middleware.  Front end is HTML and Javascript. Back end uses Amazon Transcribe to convert the voice recording to text and Amazon Bedrock to summarise the recording.
+This app best runs in Chrome but can also run in Firefox (Chrome doesn't impact chime or zoom microphone inputs). It's a client server app using Node.js Express as middleware.  Front end is HTML and Javascript. Back end uses Amazon Transcribe to convert the voice recording to text and Amazon Bedrock to summarise the recording.
 
 
 ## Getting Started
