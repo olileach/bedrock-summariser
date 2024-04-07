@@ -99,7 +99,7 @@ app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async f
     // check if transcribeText is not empty otherwise return a message
 
     if (bedrockSummary.name == "AccessDeniedException") {
-      console.log("Model access is denied by Bedrock: " + (bedrockSummary.name + " " + bedrockSummary.message);
+      console.log("Model access is denied by Bedrock: " + bedrockSummary.name + " " + bedrockSummary.message);
       res.send
         ("AccessDeniedException: You don't have access to the model with the specified model ID. "+
         "Speak to the website developer or try another model, e.g. anthropic.claude-v2.")
