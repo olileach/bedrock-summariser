@@ -42,6 +42,7 @@ async function bedrockClient (){
   return client
 }
 
+// Function to invoke a Bedrock Model.
 const invokeModel = async (text_input, modelId = "anthropic.claude-3-sonnet-20240229-v1:0:200k") => {
 
   console.log(modelId)
@@ -118,6 +119,7 @@ async function listModels() {
     region: variables.bedrockRegion,
   });
   
+  // Configure input to only use TEXT and ON_DEMAND foundational models.
   const input = {
     // byProvider: "Anthropic",
     // byProvider: 'STRING_VALUE',
