@@ -54,19 +54,21 @@ app.post('/api/question', async function (req, res) {
   var questionInput = (req.body.toString());
   console.log("Using th4e following modelId: " + modelId);
   console.log("Got the following question: " +questionInput);
-  if (questionInput){
+  
+  if (!questionInput){
+    res.send("I didn't get any text to summarise. Did you enter anything? Perhaps, try that again.");
+  }
+  else{
     const bedrockSummary = await bedrockUtils.invokeModel(questionInput, modelId);
     console.log("Value returned by Bedrock: " + bedrockSummary)
-    if (bedrockSummary.stack) {
-      res.send("We've hit this error message - try another model, e.g. anthropic.claude-v2 \n\n" 
-      + bedrockSummary.message )
-    }
-    else if (!questionInput){
-      res.send("I didn't get any text to summarise. Did you enter anything? Perhaps, try that again.");
-    }
-    else { 
-      res.send(bedrockSummary);
-    }
+  } 
+  
+  if (bedrockSummary.stack) {
+    res.send("We've hit this error message - try another model, e.g. anthropic.claude-v2 \n\n" 
+    + bedrockSummary.message )
+  }
+  else { 
+    res.send(bedrockSummary);
   };
 });
 
@@ -86,23 +88,31 @@ app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async f
   try {
     const s3response = await s3Utils.s3upload(req.body);
     const transcribeText = await transcribeUtils.transcribeJob(s3response);
+
+    // If not response from Transcribe has returned, pass back a message to the client to try again.
+    if (!transcribeText['jobTextResult']){
+      res.send("I didn't get any text to summarise. Did you say anything? Perhaps, try that again.");
+    }
+
     const bedrockSummary = await bedrockUtils.invokeModel(transcribeText['jobTextResult'],req.headers['x-model-name']);
 
     // check if transcribeText is not empty otherwise return a message
+
     if (bedrockSummary.name == "AccessDeniedException") {
+      console.log("Model access is denied by Bedrock: " + (bedrockSummary.name + " " + bedrockSummary.message);
       res.send
         ("AccessDeniedException: You don't have access to the model with the specified model ID. "+
         "Speak to the website developer or try another model, e.g. anthropic.claude-v2.")
     } else if (bedrockSummary.stack) {
+      console.log("Bedrock Stacktrace hit : " + bedrockSummary.stack)
       res.send("We've hit this error message - try another model, e.g. anthropic.claude-v2 \n\n" 
       + bedrockSummary.message )
-    } else if (transcribeText['jobTextResult']){
+    } else {
       console.log("Value returned by Bedrock: " + bedrockSummary)
       res.send(bedrockSummary) 
-    } else {
-      res.send("I didn't get any text to summarise. Did you say anything? Perhaps, try that again.");
     }
 
+    // Clean up s3 objects, tarnscript jobs etc..
     s3Utils.s3deleteObject(s3response);
     console.log(transcribeText['jobName'])
     transcribeUtils.deleteJob(transcribeText);
