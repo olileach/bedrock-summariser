@@ -100,16 +100,16 @@ class VoiceRecorder {
 		document.getElementById("progress-bar").removeAttribute("hidden")
 		document.getElementById("progress-text").removeAttribute("hidden")
 
-		var payload = new FormData();
-		payload.append('mediaStream', this.completeStream);
-		payload.append('modelUsed', setModelName());
+		var payload = this.completeStream;
+		// payload.append('mediaStream', this.completeStream);
+		// payload.append('modelUsed', setModelName());
 
 		const headers = {
             'Content-Type': 'multipart/form-data',
-			'X-Model-Name': localStorage.getItem("modelUsed")
+			'x-model-name': localStorage.getItem("modelUsed")
 		}
 
-		console.log("Sending payload to Trasncribe" + payload)
+		console.log("Sending payload to Transcribe" + payload)
 		axios.post('/api/transcribe', payload , {
 			headers:headers,
 			}).then(function (response) {
