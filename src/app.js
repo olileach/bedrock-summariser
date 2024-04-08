@@ -96,7 +96,6 @@ app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async f
     const bedrockSummary = await bedrockUtils.invokeModel(transcribeText['jobTextResult'],req.headers['x-model-name']);
 
     // check if transcribeText is not empty otherwise return a message
-
     if (bedrockSummary.name == "AccessDeniedException") {
       console.log("Model access is denied by Bedrock: " + bedrockSummary.name + " " + bedrockSummary.message);
       res.send
@@ -107,7 +106,7 @@ app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async f
       res.send("We've hit this error message - try another model, e.g. anthropic.claude-v2 \n\n" 
       + bedrockSummary.message )
     } else {
-      console.log("Value returned by Bedrock: " + bedrockSummary)
+      // send response back - response has been already logged in bedrockUtils.js. 
       res.send(bedrockSummary) 
     }
 
@@ -115,7 +114,6 @@ app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async f
     s3Utils.s3deleteObject(s3response);
     console.log(transcribeText['jobName'])
     transcribeUtils.deleteJob(transcribeText);
-
   }
   catch(err) {
     res.send("Oops - something went wrong. Try that again.");
@@ -128,6 +126,7 @@ const port = 8080;
 const server = app.listen(port, function () {
   console.log('Voice recorder app listening on port 8080')
 
+  // this is needed if running a docker image locally in a dev env.
   if (process.env.ENV == "dev"){
     variables.environment = "dev"
     variables.accessKey  = process.env.AWS_ACCESS_KEY_ID
