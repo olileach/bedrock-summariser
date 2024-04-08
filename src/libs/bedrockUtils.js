@@ -43,7 +43,7 @@ async function bedrockClient (){
 }
 
 // Function to invoke a Bedrock Model.
-const invokeModel = async (text_input, modelId = "anthropic.claude-2") => {
+const invokeModel = async (text_input, modelId = "anthropic.claude-v2:1") => {
 
   console.log(modelId)
   var client = await bedrockClient();
@@ -80,7 +80,7 @@ const invokeModel = async (text_input, modelId = "anthropic.claude-2") => {
   // Prepare the payload for the Messages API request.
   const payload = {
     anthropic_version: "bedrock-2023-05-31",
-    max_tokens: 4096,
+    max_tokens: 4000,
     messages: [
       {
         role: "user",
