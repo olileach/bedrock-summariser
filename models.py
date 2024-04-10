@@ -11,4 +11,3 @@ for x in res['modelSummaries']:
         print(x['modelName'])
         print(x['inputModalities'])
         print(x['modelId'])
-
