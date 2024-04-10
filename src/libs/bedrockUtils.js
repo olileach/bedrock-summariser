@@ -43,51 +43,72 @@ async function bedrockClient (){
 }
 
 // Function to invoke a Bedrock Model.
-const invokeModel = async (text_input, modelId = "anthropic.claude-v2:1") => {
+const invokeModel = async (input, modelId = "anthropic.claude-v2:1", inputType="text") => {
 
-  console.log(modelId)
+  console.log("this is the value of type: " + inputType);
+  var imageB64String = Buffer.from(input).toString();
+
   var client = await bedrockClient();
 
-  // var payload;
-
-  // if (modelId.includes("amazon.")){
-  //   console.log("Using Amazon mode inputs for " + modelId);
-  //   payload = {
-  //     modelId: modelId,
-  //     contentType: "application/json",
-  //     accept: "application/json",
-  //     body: JSON.stringify({
-  //       inputText: text_input,
-  //     }),
-  //   };
-
-  // }
-
-  // if (modelId.includes("anthropic.")){
-  //   console.log("Using Amazon mode inputs for " + modelId);
-  //   payload = {
-  //     anthropic_version: "bedrock-2023-05-31",
-  //     max_tokens: 4096,
-  //     messages: [
-  //       {
-  //         role: "user",
-  //         content: [{ type: "text", text: text_input }],
-  //       },
-  //     ],
-  //   };
-  // }
- 
+  if (inputType=='IMAGE'){
+    modelId = "anthropic.claude-3-sonnet-20240229-v1:0"
+    console.log("Using Amazon mode inputs for " + modelId);
+    payload = {
+      anthropic_version: "bedrock-2023-05-31",
+      max_tokens: 4096,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image",
+              source: {
+                type: "base64",
+                media_type: "image/jpeg",
+                data: imageB64String.replace(/"/g, ''),
+              }
+            },
+            {
+              type: "text",
+              text: "What is this architecture?"
+            },
+          ],
+        },
+      ],
+    };
+  }
   // Prepare the payload for the Messages API request.
-  const payload = {
-    anthropic_version: "bedrock-2023-05-31",
-    max_tokens: 4000,
-    messages: [
-      {
-        role: "user",
-        content: [{ type: "text", text: text_input }],
-      },
-    ],
+  else if (modelId.includes("amazon.")){
+    console.log("Using Amazon mode inputs for " + modelId);
+    payload = {
+      anthropic_version: "bedrock-2023-05-31",
+      max_tokens: 4096,
+      messages: [
+        {
+          role: "user",
+          content: [{ type: inputType, text: input }],
+        },
+      ],
+    };
+  }// Prepare the payload for the Messages API request.
+  else if (modelId.includes("anthropic.")){
+    console.log("Using Amazon mode inputs for " + modelId);
+    payload = {
+      anthropic_version: "bedrock-2023-05-31",
+      max_tokens: 4000,
+      messages: [
+        {
+          role: "user",
+          content: [{ type: inputType, text: input }],
+        },
+      ],
+    };
+  } else {
+    return err;
   };
+
+
+  console.log("Using model " + modelId+ " and payload" + JSON.stringify(payload));
 
   // Invoke Claude with the payload and wait for the response.
   const command = new InvokeModelCommand({
@@ -114,7 +135,7 @@ const invokeModel = async (text_input, modelId = "anthropic.claude-v2:1") => {
   }
 }
 
-async function listModels() {
+async function listModels(outputModality="TEXT") {
 
   const client = new BedrockClient({
     region: variables.bedrockRegion,
@@ -125,7 +146,7 @@ async function listModels() {
     // byProvider: "Anthropic",
     // byProvider: 'STRING_VALUE',
     // byCustomizationType: 'FINE_TUNING' || 'CONTINUED_PRE_TRAINING',
-    byOutputModality: 'TEXT',
+    byOutputModality: outputModality,
     byInferenceType: 'ON_DEMAND', // || 'PROVISIONED',
   };
 
@@ -153,3 +174,22 @@ async function listModels() {
 };
 
 module.exports = { invokeModel, listModels };
+
+
+function model_1()
+{
+  function getPayload(text){
+    return{
+      "inputText":text
+    }
+  }
+}
+
+function model_1()
+{
+  function getPayload(text){
+    return{
+      "inputText":text
+    }
+  }
+}

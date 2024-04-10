@@ -25,7 +25,7 @@ const texter = (text_input) => {
 	document.getElementById("progress-text").removeAttribute("hidden");
 	const headers = {
 		'Content-Type': 'application/json',
-		'X-Model-Name': localStorage.getItem("modelUsed")
+		'X-Model-Name': localStorage.getItem("modelTextUsed")
 	};
 	axios.post('/api/question', text_input, {
 		headers:headers,
@@ -47,14 +47,12 @@ const texter = (text_input) => {
 	});
 }
 
-function setModelName () {
-
-	var modelName = localStorage.getItem("modelUsed");
+window.addEventListener("load",()=>{
+	var modelName = localStorage.getItem("modelTextUsed")
 	if (!modelName){
-			modelName="anthropic.claude-v2"
-		};
+		modelName="anthropic.claude-v2"}
+		localStorage.setItem("modelTextUsed", modelName)
 	var select = document.getElementById("model-used");
 	select.textContent = "You are currently using the "+modelName+" model";
-};
-
-window.addEventListener("load", setModelName());
+} )
+;

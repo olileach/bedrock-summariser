@@ -1,14 +1,18 @@
 // loading libraries
 const express = require('express');
 const cookieParser = require("cookie-parser");
+const multer  = require('multer')
+const upload = multer({});
 const s3Utils = require("./libs/s3Utils.js");
 const transcribeUtils = require("./libs/transcribeUtils.js");
 const bedrockUtils = require("./libs/bedrockUtils.js");
 const variables = require("./libs/variables.js");
+var fs = require('fs');
 
 // configure express
 const path = __dirname + '/';
 const app = express();
+
 
 // app configuration
 app.use(express.static(path));
@@ -20,13 +24,13 @@ const cors = require('cors')
 // CORS config
 app.use(cors(), function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Methods: GET, POST, OPTIONS, HEAD");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, x-model-name"
   );
   next();
 });
-app.use(cors());
 
 // express header config
 app.use(
@@ -38,7 +42,6 @@ app.use(
 );
 
 // express routes
-
 // this route returns the index HTML page
 app.get('/', function(req,res){
   res.render('recorder', {test: ""});
@@ -46,6 +49,18 @@ app.get('/', function(req,res){
 
 app.get('/question', function(req,res){
   res.render('question', {test: ""});
+});
+
+app.get('/architecture', async function(req,res){
+  res.render('architecture');
+});
+
+  
+app.post('/api/architecture', async function (req, res){
+  // encoded has the base64 of your file
+  var modelId = 'anthropic.claude-3-sonnet-20240229-v1:0';
+  const bedrockSummary = await bedrockUtils.invokeModel(req.body, modelId, "IMAGE");
+  res.send(bedrockSummary);
 });
 
 app.post('/api/question', async function (req, res) {
@@ -82,7 +97,9 @@ app.post('/api/models', async function(req,res){
 
 app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async function (req, res) {
 
-  console.log("Using the following modelId: " + req.headers['x-model-name']);
+  var modelId = req.headers['x-model-name'];
+  console.log("Using the following modelId: " + modelId);
+  console.log("Headers: " + JSON.stringify(req.headers));
 
   try {
     const s3response = await s3Utils.s3upload(req.body);

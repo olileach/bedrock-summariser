@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('partials/head') %> <style data-aos-once="true"></style> 
+
+<body>
+
+  <%- include('partials/header') %>
+  <%- include('partials/architecture') %>
+
+
+  <section id="architecture" class="architecture section-bg">
+    <p class="text-center mt-3" id="model-used">You are currently using the anthropic.claude-3-sonnet-20240229-v1:0 model for imaging processing.</p>
+    <p class="text-center mt-3" id="model-used">Upload an AWS architecture diagram and get a Bedrock Review.</p>
+    <div class="row justify-content-md-center"></div>
+    <form id="model-form" class="row justify-content-md-center">
+      <div class="col-auto mb-3">
+        <input id="architectureInput" class="form-control form-control mb-3" accept="image/*" type="file">
+        </div>
+      <div class="col-auto">
+        <button id="architectureButton" style="width:150px" type="button" class="btn btn-primary mb-3 getstarted">Submit</button>
+      </div>
+    </form>
+    <div id="result"></div>
+    <div class="row">
+      <div class="col text-center">
+        <progress class="mt-2" id="progress-bar" aria-label="Content loading…" hidden></progress>
+      </div> 
+      <div color:black; class="text-center mt-2" id="progress-text" hidden>
+        Please be patient while your architecture is being reviewed by Bedrock.
+      </div>
+    </div>
+    <div class="row">
+      <div class="container-fluid">
+        <div class="form-group pt-5 container">
+          <textarea id="architectureResults" class="form-control" hidden></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%- include('partials/faq') %>
+
+</main>
+
+<%- include('partials/footer') %>
+
+<script src="../assets/js/architecture.js"></script>

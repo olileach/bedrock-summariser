@@ -47,22 +47,23 @@ window.onload = async (event) => {
 	//localStorage.setItem("models",modelArray);  
 }
 
-// Function to set model name. This could be tidied up a bit.
+// // Function to set model name. This could be tidied up a bit.
 function setModelName () {
 
 	var modelName = document.getElementById("modelDataList").value;
 	if (!modelName){
-		if (localStorage.getItem("modelUsed")){
-			modelName = localStorage.getItem("modelUsed");
+		if (localStorage.getItem("modelTextUsed")){
+			modelName = localStorage.getItem("modelTextUsed");
 		}
 		else {
-			modelName="anthropic.claude-v2"
+			modelName="anthropic.claude-v2";
+			localStorage.setItem("modelTextUsed", modelName);
 		}
 	}
 	var select = document.getElementById("model-used");
 	select.textContent = "You are currently using the "+modelName+" model";
 	document.getElementById("model-form").reset();
-	localStorage.setItem("modelUsed", modelName);
+	localStorage.setItem("modelTextUsed", modelName);
 };
 
 // Update model list on page load.

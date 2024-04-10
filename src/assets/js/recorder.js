@@ -101,17 +101,16 @@ class VoiceRecorder {
 		document.getElementById("progress-text").removeAttribute("hidden")
 
 		var payload = this.completeStream;
-		// payload.append('mediaStream', this.completeStream);
-		// payload.append('modelUsed', setModelName());
-
-		const headers = {
-            'Content-Type': 'multipart/form-data',
-			'x-model-name': localStorage.getItem("modelUsed")
+		var modelName = localStorage.getItem("modelTextUsed");
+		
+		const reqheaders = {
+			'x-model-name': modelName,
+			'Content-Type': 'multipart/form-data'
 		}
 
 		console.log("Sending payload to Transcribe" + payload)
 		axios.post('/api/transcribe', payload , {
-			headers:headers,
+			headers: reqheaders
 			}).then(function (response) {
 				var recorderResults = document.getElementById("recorderResults");
 				var str = response.data;
@@ -137,17 +136,12 @@ class VoiceRecorder {
 window.voiceRecorder = new VoiceRecorder()
 
 // sets model to use. This piece of code should go to a main javascript page.
-window.addEventListener("load", function() {
-    setModelName();
-});
-
-function setModelName () {
-
-	var modelName = localStorage.getItem("modelUsed")
+window.addEventListener("load",()=>{
+	var modelName = localStorage.getItem("modelTextUsed")
 	if (!modelName){
 		modelName="anthropic.claude-v2"}
+		localStorage.setItem("modelTextUsed", modelName)
 	var select = document.getElementById("model-used");
 	select.textContent = "You are currently using the "+modelName+" model";
-	return(modelName);
-
-};
+} )
+;
