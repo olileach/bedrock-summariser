@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<%- include('partials/head') %> <style data-aos-once="true"></style> 
+<%- include('partials/head') %> 
+
+<style>
+
+.centerimage {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  border: 3px solid #47b2e4;
+  padding: 10px;
+}
+
+</style> 
 
 <body>
 
@@ -15,11 +28,12 @@
     <div class="row justify-content-md-center"></div>
     <form id="model-form" class="row justify-content-md-center">
       <div class="col-auto mb-3">
-        <input id="architectureInput" class="form-control form-control mb-3" accept="image/*" type="file">
-        </div>
+        <input id="architectureInput" class="form-control form-control mb-3" accept="image/*" type="file">  
+      </div>
       <div class="col-auto">
         <button id="architectureButton" style="width:150px" type="button" class="btn btn-primary mb-3 getstarted">Submit</button>
       </div>
+      <p><img class="centerimage" id="output" width="800" hidden/></p>
     </form>
     <div id="result"></div>
     <div class="row">

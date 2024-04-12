@@ -43,24 +43,30 @@ app.use(
 
 // express routes
 // this route returns the index HTML page
-app.get('/', function(req,res){
+app.get('/recorder', function(req,res){
   res.render('recorder', {test: ""});
-});
-
-app.get('/question', function(req,res){
-  res.render('question', {test: ""});
 });
 
 app.get('/architecture', async function(req,res){
   res.render('architecture');
 });
 
-  
 app.post('/api/architecture', async function (req, res){
   // encoded has the base64 of your file
   var modelId = 'anthropic.claude-3-sonnet-20240229-v1:0';
   const bedrockSummary = await bedrockUtils.invokeModel(req.body, modelId, "IMAGE");
-  res.send(bedrockSummary);
+
+  if (bedrockSummary.stack) {
+    res.send("We've hit this error message - try another model, e.g. anthropic.claude-v2 \n\n" 
+    + bedrockSummary.message )
+  }
+  else { 
+    res.send(bedrockSummary);
+  };
+});
+
+app.get('/', function(req,res){
+  res.render('question', {test: ""});
 });
 
 app.post('/api/question', async function (req, res) {

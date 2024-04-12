@@ -2,13 +2,17 @@ var bedrockRunning = false;
 const architectureResults = document.getElementById("architectureResults");
 const architectureInput = document.getElementById("architectureInput");
 const architectureButton = document.getElementById("architectureButton");
+var file64base;
 
 architectureButton.addEventListener("click", async function(event) {
 	event.preventDefault();
-	const file64base = await fileDataURL( architectureInput.files[0]);
+	file64base = await fileDataURL( architectureInput.files[0]);
 	file = file64base.replace(/^data:image\/[a-z]+;base64,/, "");
 	console.log("Passing in " + architectureInput.value + " to Bedrock.");
 	architectureReviewer(file);
+	var image = document.getElementById('output');
+	image.src = file64base;
+	image.removeAttribute("hidden")
 });
 
 const fileDataURL = file => new Promise((resolve,reject) => {
@@ -17,6 +21,12 @@ const fileDataURL = file => new Promise((resolve,reject) => {
     fileRead.onerror = reject;
     fileRead.readAsDataURL( file)
 });
+
+var loadFile = function() {
+    var image = document.getElementById('output');
+    image.src = URL.createObjectURL(file64base);
+	//URL.revokeObjectURL
+  };
 
 const architectureReviewer = (data) => {
 	if (bedrockRunning) return;
@@ -42,6 +52,7 @@ const architectureReviewer = (data) => {
 			architectureResults.textContent = response.data;
 			document.getElementById('model-form').reset();
 			bedrockRunning = false;
+			// loadFile();
 			
 		})
 		.catch(function (error) {

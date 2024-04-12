@@ -103,7 +103,21 @@ const invokeModel = async (input, modelId = "anthropic.claude-v2:1", inputType="
         },
       ],
     };
-  } else {
+  }
+  else if (modelId.includes('mistral')){
+    console.log("Using Amazon mode inputs for " + modelId);
+    payload = {
+      prompt:input,
+      maxTokens:200,
+      temperature:0.7,
+      topP:1,
+      stopSequences:[],
+      countPenalty:{scale:0},
+      presencePenalty:{scale:0},
+      frequencyPenalty:{scale:0}
+    }
+  }
+  else {
     payload = {
       anthropic_version: "bedrock-2023-05-31",
       max_tokens: 4000,
