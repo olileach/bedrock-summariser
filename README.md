@@ -1,6 +1,6 @@
 # Bedrock Summariser
 
-This is a simple web app build on Node.js that allows you to summarise a conversation using your web browser microphone using AWS Bedrock, ask a question directly to Bedrock, and try out different Bedrock Foudnational Models. 
+This is a simple web app built on Node.js that allows you to summarise a conversation using your web browser microphone using AWS Bedrock, ask a question directly to Bedrock, and try out different Bedrock Foudnational Models. 
 
 
 ## Description
