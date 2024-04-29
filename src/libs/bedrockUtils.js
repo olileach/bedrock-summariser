@@ -145,9 +145,11 @@ const invokeModel = async (input, modelId = "anthropic.claude-v2:1", inputType="
   try{
 
     const apiResponse = await client.send(command);
+    console.log(apiResponse.toString());
     const decodedResponseBody = new TextDecoder().decode(apiResponse.body);
     /** @type {MessagesResponseBody} */
     const responseBody = JSON.parse(decodedResponseBody);
+    console.log(decodedResponseBody)
     console.log(responseBody.content[0].text);
     return responseBody.content[0].text;
   }
@@ -179,7 +181,7 @@ async function listModels(outputModality="TEXT") {
 
   var models = [];
   var providers = [];
-  
+
   for (i in response['modelSummaries']){
     console.log((response['modelSummaries']))
     var model = response['modelSummaries'][i]['modelId'];
