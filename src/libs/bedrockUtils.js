@@ -22,7 +22,8 @@
 
 const variables = require("./variables.js");
 const { BedrockRuntimeClient,
-        InvokeModelCommand} = require("@aws-sdk/client-bedrock-runtime");
+        InvokeModelCommand,
+        ConverseCommand } = require("@aws-sdk/client-bedrock-runtime");
 const { BedrockClient,
         ListFoundationModelsCommand,} = require("@aws-sdk/client-bedrock");
 
@@ -45,7 +46,8 @@ async function bedrockClient (){
 // Function to invoke a Bedrock Model.
 const invokeModel = async (input, modelId = "anthropic.claude-v2:1", inputType="text") => {
 
-  console.log("this is the value of type: " + inputType);
+  console.log("This is the value of type: " + inputType);
+  console.log("This is the model used: " + modelId);
   var imageB64String = Buffer.from(input).toString();
 
   var client = await bedrockClient();
@@ -76,87 +78,56 @@ const invokeModel = async (input, modelId = "anthropic.claude-v2:1", inputType="
         },
       ],
     };
-  }
-  // Prepare the payload for the Messages API request.
-  else if (modelId.includes("amazon.")){
-    console.log("Using Amazon mode inputs for " + modelId);
-    payload = {
-      anthropic_version: "bedrock-2023-05-31",
-      max_tokens: 4096,
-      messages: [
-        {
-          role: "user",
-          content: [{ type: inputType, text: input }],
-        },
-      ],
-    };
-  }// Prepare the payload for the Messages API request.
-  else if (modelId.includes("anthropic.")){
-    console.log("Using Amazon mode inputs for " + modelId);
-    payload = {
-      anthropic_version: "bedrock-2023-05-31",
-      max_tokens: 4000,
-      messages: [
-        {
-          role: "user",
-          content: [{ type: inputType, text: input }],
-        },
-      ],
-    };
-  }
-  else if (modelId.includes('mistral')){
-    console.log("Using Amazon mode inputs for " + modelId);
-    payload = {
-      prompt:input,
-      maxTokens:200,
-      temperature:0.7,
-      topP:1,
-      stopSequences:[],
-      countPenalty:{scale:0},
-      presencePenalty:{scale:0},
-      frequencyPenalty:{scale:0}
+    var command = new InvokeModelCommand({
+      contentType: "application/json",
+      body: JSON.stringify(payload),
+      modelId,
+    });
+
+    console.log("Using model " + modelId+ " and payload" + JSON.stringify(payload));
+      
+    try{
+
+      const apiResponse = await client.send(command);
+      console.log(apiResponse.toString());
+      const decodedResponseBody = new TextDecoder().decode(apiResponse.body);
+      /** @type {MessagesResponseBody} */
+      const responseBody = JSON.parse(decodedResponseBody);
+      console.log(decodedResponseBody)
+      console.log(responseBody.content[0].text);
+      return responseBody.content[0].text;
     }
-  }
-  else {
-    payload = {
-      anthropic_version: "bedrock-2023-05-31",
-      max_tokens: 4000,
-      messages: [
-        {
-          role: "user",
-          content: [{ type: inputType, text: input }],
-        },
-      ],
-    };
-  };
+    catch(err){
 
+      console.log(err)
+      return err
+    }
+  } else {
+    const conversation = [
+      {
+        role: "user",
+        content: [{ text: input }],
+      },
+    ];
+    
+    var command = new ConverseCommand({
+      modelId,
+      messages: conversation,
+      inferenceConfig: { temperature: 0.5, topP: 0.9 },
+    });
 
-  console.log("Using model " + modelId+ " and payload" + JSON.stringify(payload));
-
-  // Invoke Claude with the payload and wait for the response.
-  const command = new InvokeModelCommand({
-    contentType: "application/json",
-    body: JSON.stringify(payload),
-    modelId,
-  });
-
-  //const command = new InvokeModelCommand(payload);
-  
-  try{
-
-    const apiResponse = await client.send(command);
-    console.log(apiResponse.toString());
-    const decodedResponseBody = new TextDecoder().decode(apiResponse.body);
-    /** @type {MessagesResponseBody} */
-    const responseBody = JSON.parse(decodedResponseBody);
-    console.log(decodedResponseBody)
-    console.log(responseBody.content[0].text);
-    return responseBody.content[0].text;
-  }
-  catch(err){
-
-    console.log(err)
-    return err
+    console.log("Running Converse command: " + JSON.stringify(command))
+    
+    try {
+      const response = await client.send(command);
+      const responseText = response.output.message.content[0].text;
+      console.log(responseText);
+      return(responseText)
+    } catch (err) {
+      var msg = `ERROR: Can't invoke '${modelId}'. Reason: ${err}`;
+      console.log(msg)
+      return(msg)
+    }
   }
 }
 
@@ -199,22 +170,3 @@ async function listModels(outputModality="TEXT") {
 };
 
 module.exports = { invokeModel, listModels };
-
-
-function model_1()
-{
-  function getPayload(text){
-    return{
-      "inputText":text
-    }
-  }
-}
-
-function model_1()
-{
-  function getPayload(text){
-    return{
-      "inputText":text
-    }
-  }
-}

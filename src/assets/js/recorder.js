@@ -89,7 +89,6 @@ class VoiceRecorder {
 		this.startRef.innerHTML = 'Record'
 		this.recorderRef.pause()
 		this.mediaRecorder.stop()
-
 		this.transcribeRef.removeAttribute("hidden");
 	}
 
@@ -97,9 +96,10 @@ class VoiceRecorder {
 		if (window.voiceRecorder.transcribing) return;
 		window.voiceRecorder.transcribing = true;
 		this.transcribeRef.innerHTML = 'Transcribing....';
+		document.getElementById("question-followup-button").setAttribute("hidden", true)
+		document.getElementById("question-followup").setAttribute("hidden", true)
 		document.getElementById("progress-bar").removeAttribute("hidden")
 		document.getElementById("progress-text").removeAttribute("hidden")
-
 		var payload = this.completeStream;
 		var modelName = localStorage.getItem("modelTextUsed");
 		
@@ -109,7 +109,7 @@ class VoiceRecorder {
 		}
 
 		console.log("Sending payload to Transcribe" + payload)
-		axios.post('/api/transcribe', payload , {
+		axios.post('/api/recorder', payload , {
 			headers: reqheaders
 			}).then(function (response) {
 				var recorderResults = document.getElementById("recorderResults");
@@ -122,6 +122,8 @@ class VoiceRecorder {
 				recorderResults.rows = lines; // for chrome 
 				document.getElementById("progress-bar").setAttribute("hidden", true)
 				document.getElementById("progress-text").setAttribute("hidden", true)
+				document.getElementById("question-followup-button").removeAttribute("hidden")
+				document.getElementById("question-followup").removeAttribute("hidden")
 				recorderResults.textContent = response.data;
 				window.voiceRecorder.transcribing = false;
 				

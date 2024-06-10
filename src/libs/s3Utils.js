@@ -89,6 +89,7 @@ async function s3upload(blob){
   };
 
   const command = new PutObjectCommand(input);
+  
   try{
     const response = await client.send(command);
     var resonseObj = {

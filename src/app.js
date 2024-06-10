@@ -13,7 +13,6 @@ var fs = require('fs');
 const path = __dirname + '/';
 const app = express();
 
-
 // app configuration
 app.use(express.static(path));
 app.set('view engine', 'ejs');
@@ -101,7 +100,7 @@ app.post('/api/models', async function(req,res){
   res.send(models);
 });
 
-app.post('/api/transcribe', express.raw({type: "*/*", limit: '2000mb'}), async function (req, res) {
+app.post('/api/recorder', express.raw({type: "*/*", limit: '2000mb'}), async function (req, res) {
 
   var modelId = req.headers['x-model-name'];
   console.log("Using the following modelId: " + modelId);

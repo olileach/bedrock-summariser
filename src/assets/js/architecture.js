@@ -25,7 +25,6 @@ const fileDataURL = file => new Promise((resolve,reject) => {
 var loadFile = function() {
     var image = document.getElementById('output');
     image.src = URL.createObjectURL(file64base);
-	//URL.revokeObjectURL
   };
 
 const architectureReviewer = (data) => {
@@ -52,7 +51,6 @@ const architectureReviewer = (data) => {
 			architectureResults.textContent = response.data;
 			document.getElementById('model-form').reset();
 			bedrockRunning = false;
-			// loadFile();
 			
 		})
 		.catch(function (error) {
